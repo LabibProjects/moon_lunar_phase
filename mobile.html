@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunar Phase Viewer</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .space {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            background-image: url('space.jpg'); /* Replace 'space.jpg' with your space background */
+            background-size: cover;
+            background-position: center;
+        }
+
+        .earth {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200px; /* Adjust size as needed */
+            height: 200px; /* Adjust size as needed */
+            background-image: url('earth.png'); /* Replace 'earth.png' with your earth image */
+            background-size: cover;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .moon {
+            position: absolute;
+            width: 100px; /* Adjust size as needed */
+            height: 100px; /* Adjust size as needed */
+            transform: translate(-50%, -50%);
+            background-image: url('moon.png'); /* Replace 'moon.png' with your moon image */
+            background-size: cover;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 0;
+        }
+
+        .orbit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid white;
+            border-radius: 50%;
+            width: 300px; /* Adjust size as needed */
+            height: 300px; /* Adjust size as needed */
+        }
+
+        input[type=range] {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+
+        /* Styles for the date display bar */
+        /* Date display bar */
+        .date-bar {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            color: white;
+            font-family: 'Arial', sans-serif; /* Replace with your preferred font */
+            font-size: 24px; /* Adjust font size as needed */
+        }
+
+        /* Moon phases */
+        .moon-phases {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            color: white;
+            font-family: 'Arial', sans-serif; /* Replace with your preferred font */
+            font-size: 20px; /* Adjust font size as needed */
+        }
+    </style>
+</head>
+<body>
+    <div class="space">
+        <div class="earth"></div>
+        <div id="orbit" class="orbit"></div>
+        <div id="moon" class="moon"></div>
+        <div id="dateBar" class="date-bar"></div> <!-- Date display bar -->
+        <input type="range" min="1" max="30" value="1" id="dateSlider"> <!-- Slider for date -->
+        <div id="dateNumbers" class="date-numbers"></div> <!-- Day numbers -->
+        <div id="moonPhases" class="moon-phases"></div> <!-- Moon phases -->
+    </div>
+
+    <script>
+        const moon = document.getElementById('moon');
+        const orbit = document.getElementById('orbit');
+        const dateSlider = document.getElementById('dateSlider');
+        const dateBar = document.getElementById('dateBar');
+        const dateNumbers = document.getElementById('dateNumbers');
+        const moonPhases = document.getElementById('moonPhases');
+
+        const orbitRadius = 150; // Radius of the orbit
+        let currentDate = parseInt(dateSlider.value);
+
+        dateSlider.addEventListener('input', () => {
+            updateMoonPhase(dateSlider.value);
+        });
+
+        function updateMoonPhase(day) {
+            currentDate = parseInt(day);
+            const phase = calculateMoonPhase(currentDate);
+            moon.style.backgroundImage = `url('moon_phase_${phase}.png')`; // Adjust image naming convention if needed
+            updateMoonPosition();
+            updateDateBar();
+            updateDayNumbers();
+            updateMoonPhases(phase);
+        }
+
+        function calculateMoonPhase(day) {
+            // Assuming a lunar cycle of 30 days
+            const phase = Math.floor(((day - 1) % 30) / 3); // Dividing the lunar cycle into 8 phases
+            return phase < 7 ? phase : phase % 7; // Repeat phases after reaching phase 7
+        }
+
+        function updateMoonPosition() {
+            const angle = ((currentDate - 1) / 30) * 360;
+            const x = orbitRadius * Math.cos(degreesToRadians(angle));
+            const y = orbitRadius * Math.sin(degreesToRadians(angle));
+            moon.style.left = `${200 + x}px`;
+            moon.style.top = `${450 + y}px`;
+        }
+
+        function updateDateBar() {
+            dateBar.textContent = `Day ${currentDate}`;
+        }
+
+        function updateDayNumbers() {
+            dateNumbers.textContent = ''; // Clear previous numbers
+            for (let i = 1; i <= 30; i++) {
+                const dayNumber = document.createElement('span');
+                dayNumber.textContent = i;
+                dateNumbers.appendChild(dayNumber);
+            }
+        }
+
+        function updateMoonPhases(phase) {
+            const phases = ['New Moon', 'Waxing Crescent', 'First Quarter', 'Waxing Gibbous', 'Full Moon', 'Waning Gibbous', 'Last Quarter', 'Waning Crescent'];
+            moonPhases.textContent = phases[phase];
+        }
+
+        function degreesToRadians(degrees) {
+            return degrees * (Math.PI / 180);
+        }
+
+        updateMoonPhase(dateSlider.value); // Initial moon phase update based on slider value
+    </script>
+</body>
+</html>

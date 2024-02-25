@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunar Phase Viewer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="space">
+        <div class="earth"></div>
+        <div id="orbit" class="orbit"></div>
+        <div id="moon" class="moon"></div>
+        <div id="dateBar" class="date-bar"></div> <!-- Date display bar -->
+        <input type="range" min="1" max="30" value="1" id="dateSlider"> <!-- Slider for date -->
+        <div id="dateNumbers" class="date-numbers"></div> <!-- Day numbers -->
+        <div id="moonPhases" class="moon-phases"></div> <!-- Moon phases -->
+        
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
